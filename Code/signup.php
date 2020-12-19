@@ -192,22 +192,22 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 <label for="name">Name (First Last):</label>
                 <input type="text" name="name" class="form-control" value="<?php echo $name; ?>">
                 <span class="help-block"><?php echo $name_err; ?></span>
-            </div>
+            </div><br>
             <div class="input-group">
                 <label for="email">Email address:</label>
                 <input type="email" name="email" class="form-control" value="<?php echo $email; ?>">
                 <span class="help-block"><?php echo $email_err; ?></span>
-            </div>
+            </div><br>
             <div class="input-group">
                 <label for="username">Username:</label>
                 <input type="text" name="username" class="form-control" value="<?php echo $username; ?>">
                 <span class="help-block"><?php echo $username_err; ?></span>
-            </div>
+            </div><br>
             <div class="input-group">
                 <label for="pwd">Password:</label>
                 <input type="password" name="password" class="form-control" value="<?php echo $password; ?>">
                 <span class="help-block"><?php echo $password_err; ?></span>
-            </div>
+            </div><br>
             <div class="input-group">
                 <label for="pwd">Confirm Password:</label>
                 <input type="password" name="confirm_password" class="form-control" value="<?php echo $confirm_password; ?>">

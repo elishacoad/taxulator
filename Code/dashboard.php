@@ -1,6 +1,6 @@
 <?php
 session_start();
-
+require_once "./config.php";
 ?>
 
 <!DOCTYPE html>
@@ -40,16 +40,42 @@ session_start();
 
         <h2>Previous Sessions</h2>
         <div class="well">
-            <table class="table">
+            <table class="table striped">
                 <thead>
                     <tr>
                         <th>Session</th>
-                        <th>Date</th>
+                        <th>Pre-Deduction</th>
+                        <th>Adjusted Taxable Income</th>
                         <th>File</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <tr>
+                    <?php
+                    $i = $num = 0;
+                    $query = "SELECT PreDeduction, AdjustedTaxableIncome FROM Session WHERE TPID = '" . $_SESSION['tpid'] . "'";
+                    if ($result = mysqli_query($link, $query)) {
+                        while ($row = mysqli_fetch_row($result)) {
+                            $class = ($i == 0) ? "" : "alt";
+                            echo "<tr class=\"" . $class . "\">";
+                            echo "<td>" . ($num + 1) . "</td>";
+                            echo "<td>" . $row[0] . "</td>";
+                            echo "<td>" . $row[1] . "</td>";
+                            echo "<td><a>Ses" . ($num + 1) . " 10-10-10.pdf</a></td>";
+                            echo "</tr>";
+                            $i = ($i == 0) ? 1 : 0;
+                            $num++;
+                        }
+                        if ($num == 0) {
+                            echo "<h4>No Previous Sessions</h4>";
+                        }
+                        mysqli_free_result($result);
+                    } else {
+                        echo "oops! something went wrong. please try again later.";
+                    }
+                    mysqli_stmt_close($result);
+                    mysqli_close($link);
+                    ?>
+                    <!-- <tr>
                         <td>3</td>
                         <td>11-12-20</td>
                         <td><a>Ses3 11-12-20.pdf</a></td>
@@ -63,7 +89,7 @@ session_start();
                         <td>1</td>
                         <td>03-12-19</td>
                         <td><a>Ses1 03-12-19.pdf</a></td>
-                    </tr>
+                    </tr> -->
                 </tbody>
             </table>
         </div>

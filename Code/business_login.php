@@ -14,7 +14,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $email_err = "please enter an email.";
     } else {
         // prepare a select statement
-        $sql = "SELECT email FROM TaxPayer WHERE email = ?";
+        $sql = "SELECT email FROM Employers WHERE email = ?";
         // $sql = "SELECT email FROM TaxPayer WHERE email = ? AND [password] = ?";
 
         if ($stmt = mysqli_prepare($link, $sql)) {
@@ -49,7 +49,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $password_err = "please enter a password.";
     } else {
         // prepare a select statement
-        $sql = "SELECT email FROM TaxPayer WHERE password = ?";
+        $sql = "SELECT email FROM Employers WHERE password = ?";
         // $sql = "SELECT email FROM TaxPayer WHERE email = ? AND [password] = ?";
 
         if ($stmt = mysqli_prepare($link, $sql)) {
@@ -85,12 +85,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         // Save Variables to global vars
         $email = $_POST['email'];
 
-        $query = "SELECT Name, TPID FROM TaxPayer WHERE Email = '" . $email . "'";
+        $query = "SELECT Name, EID FROM Employers WHERE Email = '" . $email . "'";
         // $query = "SELECT Name FROM TaxPayer WHERE Email = '" . $email . "'";
         if ($result = mysqli_query($link, $query)) {
             while ($row = mysqli_fetch_row($result)) {
                 $name = $row[0];
-                $tpid = $row[1];
+                $eid = $row[1];
             }
             mysqli_free_result($result);
         } else {
@@ -99,9 +99,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         mysqli_stmt_close($result);
 
         $_SESSION['name'] = $name;
-        $_SESSION['tpid'] = $tpid;
+        $_SESSION['eid'] = $eid;
         $_SESSION['email'] = $email;
-        header("location: dashboard.php");
+        header("location: Session/businesspage1.php");
     }
 
 
@@ -137,13 +137,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             </ul>
         </div>
     </nav>
+
     <div class="container">
         <div class="page-header">
-            <h1>Login</h1>
+            <h1>Business Login</h1>
         </div>
-        <form action="login.php" method="post">
+        <form action="business_login.php" method="post">
             <div class="input-group">
-                <label for="email">Email address:</label>
+                <label for="email">Business Email:</label>
                 <input type="email" name="email" class="form-control" value="<?php echo $email; ?>">
                 <span class="help-block"><?php echo $email_err; ?></span>
             </div><br>

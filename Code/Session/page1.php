@@ -23,10 +23,17 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $income = $_POST["income"];
     }
 
-    if (empty($_POST["deduct"])) {
-        $deduct_err = "please enter a deductible.";
-    } else {
-        $deduct = $_POST["deduct"];
+    if (isset($_POST['basic'])) {
+        $deduct = 3000;
+    }
+    if (isset($_POST['female'])) {
+        $deduct += 500;
+    }
+    if (isset($_POST['handicap'])) {
+        $deduct += 750;
+    }
+    if (isset($_POST['wounded'])) {
+        $deduct += 2000;
     }
 
     if (empty($_POST["deduct2"])) {
@@ -54,24 +61,24 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 
     // Check input errors before inserting in database
-    if (empty($income_err) && empty($deduct_err) && empty($deduct2_err) && empty($ctax_err)) {
+    if (empty($income_err) && empty($deduct2_err) && empty($ctax_err)) {
         $tpid = $_SESSION['tpid'];
         $atincome = $income - $deduct - $deduct2;
 
         // Prepare an insert statement
-        $arglist = "('00010','" . $tpid . "','" . $isource . "','" . $income . "','" . $atincome . "','" . $ctax . "','NA', 'NA')";
-        $query = "INSERT INTO Session (SID, TPID, IncomeSource, PreDeduction, AdjustedTaxableIncome, CityID, TaxReturnDetails, Report) VALUES " . $arglist;
+        $arglist = "('" . $tpid . "','" . $isource . "','" . $income . "','" . $atincome . "','" . $ctax . "','NA', 'NA')";
+        $query = "INSERT INTO Session (TPID, IncomeSource, PreDeduction, AdjustedTaxableIncome, CityID, TaxReturnDetails, Report) VALUES " . $arglist;
         if ($result = mysqli_query($link, $query)) {
             if ($param_ati < 5000) {
-                $taxrate = .10;
+                $taxrate = 0.10;
             } else if ($param_ati < 11000) {
-                $taxrate = .15;
+                $taxrate = 0.15;
             } else if ($param_ati < 18000) {
-                $taxrate = .20;
+                $taxrate = 0.20;
             } else if ($param_ati < 35000) {
-                $taxrate = .25;
+                $taxrate = 0.25;
             } else {
-                $taxrate = .30;
+                $taxrate = 0.30;
             }
 
             $taxdue = $atincome * $taxrate;
@@ -83,6 +90,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $_SESSION['atincome'] = $atincome;
             $_SESSION['citymin'] = $citymin;
             $_SESSION['taxdue'] = $taxdue;
+            $_SESSION['taxrate'] = $taxrate;
 
             header("location: page2.php");
             mysqli_free_result($result);
@@ -124,8 +132,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     </nav>
     <div class="container">
         <div class="row">
-            <div class="col-md-4"></div>
-            <div class="col-md-4">
+            <div class="col-md-3"></div>
+            <div class="col-md-6">
                 <p>
                     <?php
                     echo "You are currently logged in as " .  $_SESSION['name'];
@@ -136,25 +144,19 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                         <label for="isource">Income source:</label>
                         <input type="text" name="isource" class="form-control" value="<?php echo $isource; ?>">
                         <span class="help-block"><?php echo $isource_err; ?></span>
-                    </div>
+                    </div><br>
                     <div class="input-group">
                         <label for="income">Gross Taxable Income</label>
                         <input type="text" name="income" class="form-control" value="<?php echo $income; ?>">
                         <span class="help-block"><?php echo $income_err; ?></span>
                     </div>
                     <h4>Taxable Income</h4>
-                    <dl>
-                        <li>Allowed a maximum of 2 of the following deductions:</li>
-                        <li><b>Basic Deduction</b> - $3,000</li>
-                        <li><b>Female or Senior Citizen Deduction</b> (age 65 or over) - $500</li>
-                        <li><b>Handicap Deduction</b> - $750</li>
-                        <li><b>Wounded Veteran Deduction</b> - $2,000</li>
-                    </dl>
-                    <div class="input-group">
-                        <label for="deduct">Sum of Deductibles</label>
-                        <input type="text" name="deduct" class="form-control" value="<?php echo $deduct; ?>">
-                        <span class="help-block"><?php echo $deduct_err; ?></span>
-                    </div>
+                    Allowed a maximum of 2 of the following deductions:<br>
+                    <input onclick="return false;" checked type='checkbox' name="basic" value="basic" /> <label for="basic"><b>Basic Deduction</b> - $3,000</label><br>
+                    <input type='checkbox' name="female" value="female" /> <label for="female"><b>Female or Senior Citizen Deduction</b> (age 65 or over) - $500</label><br>
+                    <input type='checkbox' name="handicap" value="handicap" /> <label for="handicap"><b>Handicap Deduction</b> - $750</label><br>
+                    <input type='checkbox' name="wounded" value="wounded" /> <label for="wounded"><b>Wounded Veteran Deduction</b> - $2,000</label><br>
+
                     <h4>Adjusted Taxable Income</h4>
                     <dl>
                         <li>Include the sum of the following:</li>
@@ -167,8 +169,17 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                         <input type="text" name="deduct2" class="form-control" value="<?php echo $deduct2; ?>">
                         <span class="help-block"><?php echo $deduct2_err; ?></span>
                     </div>
+
+                    <h4>Popular Cities and their IDs</h4>
+                    <p>Used for calculating City Tax Minimums</p>
+                    <dl>
+                        <li>San Francisco, Cal - 54432</li>
+                        <li>Moscow, ID - 45233</li>
+                        <li>New York, NY - 20051</li>
+                        <li>Phoenix, AZ - 95220</li>
+                    </dl>
                     <div class="input-group">
-                        <label for="ctax">Your city tax id</label>
+                        <label for="ctax">Your city id</label>
                         <input type="text" name="ctax" class="form-control" value="<?php echo $ctax; ?>">
                         <span class="help-block"><?php echo $ctax_err; ?></span>
                     </div>
@@ -180,7 +191,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     <li class="previous"><a href="../dashboard.php">Quit</a></li>
                 </ul>
             </div>
-            <div class="col-md-4"></div>
+            <div class="col-md-3"></div>
         </div>
     </div>
 </body>

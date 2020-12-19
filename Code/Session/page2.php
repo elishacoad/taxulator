@@ -1,7 +1,23 @@
 <?php
 
 session_start();
+require_once "../config.php";
+$employer = "";
 
+$query = "SELECT Name FROM Employers WHERE EID = (SELECT EID FROM WorksFor WHERE TPID = '" . $_SESSION['tpid'] . "')";
+if ($result = mysqli_query($link, $query)) {
+    while ($row = mysqli_fetch_row($result)) {
+        $employer = $row[0];
+    }
+    if (empty($employer)) {
+        $employer = "Unknown";
+    }
+    mysqli_free_result($result);
+} else {
+    echo "oops! something went wrong. please try again later.";
+}
+mysqli_stmt_close($result);
+mysqli_close($link);
 ?>
 
 <!DOCTYPE html>
@@ -42,7 +58,7 @@ session_start();
                 <iframe id="pdf" style="width: 100%; height: 800px;"></iframe>
 
                 <ul class="pager">
-                    <li class="previous"><a href="../dashboard.php">Quit</a></li>
+                    <li class="previous"><a href="../dashboard.php">Back to Dashboard</a></li>
                 </ul>
             </div>
             <div class="col-md-3"></div>
@@ -68,6 +84,11 @@ session_start();
         page.drawText('Name: '.concat("<?php echo $_SESSION['name']; ?>"), {
             x: 350,
             y: 760,
+            size: 14
+        })
+        page.drawText('Works At: '.concat("<?php echo $employer; ?>"), {
+            x: 350,
+            y: 740,
             size: 14
         })
         page.drawText('Gross Taxable Income: $'.concat("<?php echo $_SESSION['gtincome']; ?>"), {
