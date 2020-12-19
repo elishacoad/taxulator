@@ -1,3 +1,8 @@
+<?php
+session_start();
+
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -24,9 +29,14 @@
     </nav>
     <div class="container">
         <div class="page-header">
+            <h4>
+                <?php
+                echo "Hello " .  $_SESSION['name'];
+                ?>
+            </h4>
             <h1>Dashboard</h1>
         </div>
-        <a type="button" class="btn btn-primary btn-block" href="./Session/page1.html">Start New Session</a>
+        <a type="button" class="btn btn-primary btn-block" href="./Session/page1.php">Start New Session</a>
 
         <h2>Previous Sessions</h2>
         <div class="well">
