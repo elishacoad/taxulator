@@ -91,17 +91,17 @@ mysqli_close($link);
             y: 740,
             size: 14
         })
-        page.drawText('Gross Taxable Income: $'.concat("<?php echo $_SESSION['gtincome']; ?>"), {
+        page.drawText('Gross Taxable Income: $'.concat("<?php echo number_format($_SESSION['gtincome']); ?>"), {
             x: 50,
             y: 650,
             size: 18
         })
-        page.drawText('Taxable Income: $'.concat("<?php echo $_SESSION['tincome']; ?>"), {
+        page.drawText('Taxable Income: $'.concat("<?php echo number_format($_SESSION['tincome']); ?>"), {
             x: 50,
             y: 600,
             size: 18
         })
-        page.drawText('Adjusted Taxable Income: $'.concat("<?php echo $_SESSION['atincome']; ?>"), {
+        page.drawText('Adjusted Taxable Income: $'.concat("<?php echo number_format($_SESSION['atincome']); ?>"), {
             x: 50,
             y: 550,
             size: 18
@@ -111,12 +111,12 @@ mysqli_close($link);
             y: 500,
             size: 18
         })
-        page.drawText('Min City Tax: $'.concat("<?php echo $_SESSION['citymin']; ?>"), {
+        page.drawText('Min City Tax: $'.concat("<?php echo number_format($_SESSION['citymin']); ?>"), {
             x: 50,
             y: 450,
             size: 18
         })
-        page.drawText('Tax Due: '.concat("<?php echo $_SESSION['taxdue']; ?>"), {
+        page.drawText('Taxes Due: $'.concat("<?php echo number_format($_SESSION['taxdue']); ?>"), {
             x: 50,
             y: 400,
             size: 18

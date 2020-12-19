@@ -142,6 +142,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         <div class="page-header">
             <h1>Business Login</h1>
         </div>
+        <p>Are you a tax payer? <a href="./login.php">Click Here</a></p>
         <form action="business_login.php" method="post">
             <div class="input-group">
                 <label for="email">Business Email:</label>

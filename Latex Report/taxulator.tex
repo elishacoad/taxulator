@@ -92,6 +92,60 @@ In the United States of America, taxes have always been a complex system. It req
 
 An additional motivation for Taxulator is to bring the myriad of benefits of technology to tax filing. Such benefits include security, clarity, and easy record keeping. By receiving private financial information directly from the source, without the possibility of interception, we provide security. By providing additional information throughout the tax filing process, so that fewer mistakes are made overall, we provide clarity. And we also bring better record keeping, for a digital report is much easier to find and pull up than searching through boxes of old files.
 
+\subsection{Testing Resources}
+If you would like to dig deeper into the demo of taxulator yourself, you can find all the code on our GitHub at \url{https://github.com/elishacoad/taxulator}, including the latex code of this report. The live prototype can also be found at \url{http://mytax1.kb-projects.com/index.html}. Some testing data that might be useful is as follows:
+
+\begin{table}[H]
+\begin{center}
+  \caption{Company Sample Data}
+\begin{tabularx}{0.45\textwidth} { | m{2cm} | m{3cm} | m{1.9cm} | }
+ \hline
+ Name & Email & Password \\
+ \hline
+ \hline
+ University of Idaho & campus@uidaho.edu & uofirocks!\\
+ \hline
+ Future Design & future@design.com & futureishere77\\
+ \hline
+ SEL & company@sel.com & a43cx32gsf\\
+\end{tabularx}
+\end{center}
+\end{table}
+
+\begin{table}[H]
+\begin{center}
+  \caption{Tax Payer Sample Data}
+\begin{tabularx}{0.45\textwidth} { | m{2cm} | m{3cm} | m{1.9cm} | }
+ \hline
+ Name & Email & Password \\
+ \hline
+ \hline
+ Henry Jamison & Henry@gmail.com & whataday43\\
+ \hline
+ Susie Queen & susie@gmail.com & susieiscool\\
+ \hline
+ Stewart Rowe & nfay@example.net & fx38f183\\
+\end{tabularx}
+\end{center}
+\end{table}
+
+\begin{table}[H]
+\begin{center}
+  \caption{Tax Payer IDs}
+\begin{tabularx}{0.45\textwidth} { | m{4cm} | m{3.25cm} | }
+ \hline
+ Name & ID \\
+ \hline
+ \hline
+ Henry Jamison & 60004\\
+ \hline
+ Susie Queen & 60006\\
+ \hline
+ Stewart Rowe & 50034\\
+\end{tabularx}
+\end{center}
+\end{table}
+
 \subsection{Research}
 Previous research shows there are already a few tax solutions on the market. One can hire a professional tax accountant to do their taxes for them, however this method requires handing off private information and can be a bit costly. There also are also several tax websites which aim to make tax filing an easier process, such as TurboTax and FreeTaxUSA. However, there are very few that use a centralized user filing scheme, meaning that most websites still require the individual taxpayer to upload all of their employer forms, investment interest forms, rental income forms, and the list goes on. What we propose is that these forms are submitted directly by their respective parties, helping reduce the overall amount of confusion and drudgery for the everyday user.
 
@@ -108,25 +162,25 @@ Taxulator will need to collect data from both the individual taxpayer as well as
 When a user lands on the site, they will be asked to create an account. This will set up some of the basic information for the user that can be used for the tax filing process and this is also when a unique 20-digit identifier will be assigned. When the user goes to file their taxes, Taxulator will automatically link all appropriate forms (provided by other organizations) to the taxpayer’s session. The user can verify that all the right forms were included before carrying on. If anything is missing, the user will have to option to upload the form manually. The user will also have the option to report their own expenses.
 
 \begin{figure}[H]
-  \label{UserFlow}
-  \centering
-  \includegraphics[width=\linewidth]{Images/UserFlow.png}
-  \caption{Tax Report Session Flow}
-\end{figure}
-
-The next step is to calculate the users adjusted taxable income. To do this, the user will check off which deductions they are eligible for. Then student loans, home mortgage interests, job-related expenses, etc. will be taken into effect producing the user’s adjusted taxable income. The adjusted taxable income is then taxed using a graduated scale, and the user is notified of which percentage rate will be applied.
-
-\begin{figure}[H]
   \centering
   \includegraphics[width=\linewidth]{Images/Form2.png}
   \caption{Tax Payer Deductibles Form}
   \label{TaxableIncome}
 \end{figure}
 
+The next step is to calculate the users adjusted taxable income. To do this, the user will check off which deductions they are eligible for. Then student loans, home mortgage interests, job-related expenses, etc. will be taken into effect producing the user’s adjusted taxable income. The adjusted taxable income is then taxed using a graduated scale, and the user is notified of which percentage rate will be applied.
+
 Then the minimum annual city tax is ensured using a database of the city tax minimums in the USA. After this, the user reports their employers, businesses or farms owned, and any houses they own. The user also must report home rentals. The first time any of these are entered they will get added to a database for future use. Once added to the database, the user will be able to select them from a drop-down list.
 
 Lastly, Taxulator will prepare the tax return. It will attach all necessary documents, cross reference incomes and deductions, and verify all reports. Taxulator also will show the taxpayer if they are due for a return and if so of how much. At this point the user can sign and submit the report.
 If the user wishes to modify the report, they can create a copy of it and then resubmit a new report. All submitted reports are retained and viewable from the dashboard of the website.
+
+\begin{figure}[H]
+  \label{UserFlow}
+  \centering
+  \includegraphics[width=\linewidth]{Images/UserFlow.png}
+  \caption{Tax Report Session Flow}
+\end{figure}
 
 \subsection{Database Scheme}
 Taxulator uses a session-centric database scheme. What this means is that as a user files a tax report, all correlated information will be stored in a session. Upon submission, this session will be added to the session database for future reference and retrieval. Refer to Figure \ref{DBSchema} for the database scheme we decided to use.
@@ -179,12 +233,12 @@ On the server side, Apache was used for hosting our web server. Using Apache pai
 To help us get familiar working with such a stack, we created a sandbox page \cite{Sandbox}, based off of Joel’s code. We used this for testing out queries with the data. The sandbox allows for selecting a database to work with, typing in a query, and then submitting and getting the output. This was useful during the development stage of our site as it allowed for quick testing of queries to ensure they worked. This also helped us get a better understanding of how to work with multiple layers of the stack. By using PHP as the middle man, we were able to send queries to our database and then output the results.
 
 \subsection{Functionality}
-Taxulator’s core functionality is to allow users to file taxes quickly and easily. Several features come together to achieve this. Here are Taxulator’s primary features:
+Taxulator’s core functionality is to allow users to file taxes quickly and easily. We have two sides to the website, the individual tax payer side and the company side. Both sides can sign up and log in, and each have their own capabilities. Here are Taxulator’s primary features:
 \begin{itemize}
 \item Landing Page
 \item User Profile System
 \item User Dashboard
-\item Business Dashboard
+\item Business Employee Form
 \item Data Forms
 \item Records of Previous Sessions
 \item Database of Tax-related Information

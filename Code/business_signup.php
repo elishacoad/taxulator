@@ -1,11 +1,12 @@
 <?php
 session_start();
-// Include config file
+
 
 require_once "config.php";
+
 // Define variables and initialize with empty values
-$email = $name = $username = $password = $confirm_password = "";
-$email_err = $name_err = $username_err = $password_err = $confirm_password_err = "";
+$email = $name = $password = $confirm_password = "";
+$email_err = $name_err = $password_err = $confirm_password_err = "";
 
 // Processing form data when form is submitted
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
@@ -18,43 +19,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $name = trim($_POST["name"]);
     }
 
-    // Validate username
-    if (empty(trim($_POST["username"]))) {
-        $username_err = "please enter an username.";
-    } else {
-        // prepare a select statement
-        $sql = "SELECT username FROM TaxPayer WHERE username = ?";
-
-        if ($stmt = mysqli_prepare($link, $sql)) {
-            // bind variables to the prepared statement as parameters
-            mysqli_stmt_bind_param($stmt, "s", $param_username);
-
-            // set parameters
-            $param_username = trim($_POST["username"]);
-
-            // attempt to execute the prepared statement
-            if (mysqli_stmt_execute($stmt)) {
-                /* store result */
-                mysqli_stmt_store_result($stmt);
-
-                if (mysqli_stmt_num_rows($stmt) == 1) {
-                    $username_err = "this username is already taken.";
-                } else {
-                    $username = trim($_POST["username"]);
-                }
-            } else {
-                echo "oops! something went wrong. please try again later.";
-            }
-
-            // close statement
-            mysqli_stmt_close($stmt);
-        }
-    }
     if (empty(trim($_POST["email"]))) {
         $email_err = "please enter an email.";
     } else {
         // prepare a select statement
-        $sql = "SELECT email FROM TaxPayer WHERE email = ?";
+        $sql = "SELECT email FROM Employers WHERE email = ?";
 
         if ($stmt = mysqli_prepare($link, $sql)) {
             // bind variables to the prepared statement as parameters
@@ -102,53 +71,72 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
 
     // Check input errors before inserting in database
-    if (empty($username_err) && empty($name_err) && empty($email_err) && empty($password_err) && empty($confirm_password_err)) {
+    if (empty($name_err) && empty($email_err) && empty($password_err) && empty($confirm_password_err)) {
 
-        // Prepare an insert statement
-        $sql = "INSERT INTO TaxPayer (IsOrganization, Email, Name, Password, Username) VALUES (0, ?, ?, ?, ?)";
+        $arglist = "('" . $name . "','" . $email . "','" . $password . "')";
+        $query = "INSERT INTO Employers (Name, Email, Password) VALUES " . $arglist;
 
-        if ($stmt = mysqli_prepare($link, $sql)) {
-            // Bind variables to the prepared statement as parameters
-            mysqli_stmt_bind_param($stmt, "ssss", $param_email, $param_name, $param_password, $param_username);
+        if ($result = mysqli_query($link, $query)) {
 
-            // Set parameters
-            $param_username = $username;
-            $param_name = $name;
-            $param_email = $email;
-            $param_password = $password; // Creates a password hash
-
-            // Attempt to execute the prepared statement
-            if (mysqli_stmt_execute($stmt)) {
-                mysqli_stmt_close($stmt);
-
-                // Save Variables to global vars
-                $email = $_POST['email'];
-
-                $query = "SELECT Name, TPID FROM TaxPayer WHERE Email = '" . $email . "'";
-                // $query = "SELECT Name FROM TaxPayer WHERE Email = '" . $email . "'";
-                if ($result = mysqli_query($link, $query)) {
-                    while ($row = mysqli_fetch_row($result)) {
-                        $name = $row[0];
-                        $tpid = $row[1];
-                    }
-                    mysqli_free_result($result);
-                } else {
-                    echo "oops! something went wrong. please try again later.";
+            $query = "SELECT EID FROM Employers WHERE Email = '" . $email . "'";
+            echo $query;
+            if ($result = mysqli_query($link, $query)) {
+                echo "success";
+                while ($row = mysqli_fetch_row($result)) {
+                    $eid = $row[0];
                 }
-                mysqli_stmt_close($result);
-
-                $_SESSION['name'] = $name;
-                $_SESSION['tpid'] = $tpid;
-                $_SESSION['email'] = $email;
-                header("location: dashboard.php");
+                mysqli_free_result($result);
             } else {
-                echo "Something went wrong. Please try again later.";
-                mysqli_stmt_close($stmt);
+                echo "oops! something went wrong. please try again later.";
             }
-
-            // Close statement
-            // mysqli_stmt_close($stmt);
+            mysqli_stmt_close($result);
+            $_SESSION['name'] = $name;
+            $_SESSION['eid'] = $eid;
+            $_SESSION['email'] = $email;
+            header("location: Session/businesspage1.php");
+            mysqli_free_result($result);
+        } else {
+            echo "oops! something went wrong. please try again later.";
         }
+        mysqli_stmt_close($result);
+
+        // // Prepare an insert statement
+        // $sql = "INSERT INTO Employers (Name, Email, Password) VALUES (?, ?, ?)";
+
+        // if ($stmt = mysqli_prepare($link, $sql)) {
+        //     // Bind variables to the prepared statement as parameters
+        //     mysqli_stmt_bind_param($stmt, "sss", $name, $email, $password);
+        //     echo $stmt;
+
+        //     // Attempt to execute the prepared statement
+        //     if (mysqli_stmt_execute($stmt)) {
+        //         mysqli_stmt_close($stmt);
+
+        //         $query = "SELECT Name, EID FROM Employers WHERE Email = '" . $email . "'";
+        //         echo $query;
+        //         if ($result = mysqli_query($link, $query)) {
+        //             echo "success";
+        //             while ($row = mysqli_fetch_row($result)) {
+        //                 $name = $row[0];
+        //                 $eid = $row[1];
+        //             }
+        //             mysqli_free_result($result);
+        //         } else {
+        //             echo "oops! something went wrong. please try again later.";
+        //         }
+        //         mysqli_stmt_close($result);
+
+        //         $_SESSION['name'] = $name;
+        //         $_SESSION['eid'] = $eid;
+        //         $_SESSION['email'] = $email;
+        //         header("location: ../businesspage2.php");
+        //     } else {
+        //         echo "Something went wrong. Please try again later.";
+        //         mysqli_stmt_close($stmt);
+        //     }
+        // } else {
+        //     echo "Something went wrong. Please try again later.";
+        // }
     }
 
     // Close connection
@@ -185,12 +173,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     </nav>
     <div class="container">
         <div class="page-header">
-            <h1>Sign Up</h1>
+            <h1>Business Sign Up</h1>
         </div>
-        <p>Are you a business? <a href="./business_signup.php">Click Here</a></p>
-        <form action="signup.php" method="post">
+        <p>Are you a tax payer? <a href="./signup.php">Click Here</a></p>
+        <form action="business_signup.php" method="post">
             <div class="input-group">
-                <label for="name">Name (First Last):</label>
+                <label for="name">Company Name:</label>
                 <input type="text" name="name" class="form-control" value="<?php echo $name; ?>">
                 <span class="help-block"><?php echo $name_err; ?></span>
             </div><br>
@@ -198,11 +186,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 <label for="email">Email address:</label>
                 <input type="email" name="email" class="form-control" value="<?php echo $email; ?>">
                 <span class="help-block"><?php echo $email_err; ?></span>
-            </div><br>
-            <div class="input-group">
-                <label for="username">Username:</label>
-                <input type="text" name="username" class="form-control" value="<?php echo $username; ?>">
-                <span class="help-block"><?php echo $username_err; ?></span>
             </div><br>
             <div class="input-group">
                 <label for="pwd">Password:</label>
