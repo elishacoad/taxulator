@@ -202,6 +202,9 @@ Later in the project, after setting up the database scheme and filling it with d
 \paragraph{Lack of sufficient knowledge in PHP}
 Our last task was to connect the backend to the frontend through PHP code. None of the team members had had previous knowledge of PHP, so there was a steep learning curve we all went through. We spent many hours with PHP to try to get a sandbox up and running. This unfortunately ended up taking longer than expected, which made it so that we did not have time to implement many of the features we originally planned on completing. However this sandbox \cite{Sandbox} was extremely helpful for us to get a grasp of PHP and also helped us write queries for the Taxulator site.
 
+\paragraph{Generating PDFs}
+We started out with the goal to generate a filled out PDF the user can download. We first tried getting to get PDFtk for PHP working. We had some trouble getting installed, and after a couple hours decided to find another PDF generator. We found PDF-LIB, a JavaScript library for generating PDFs. After a bit of work, we were able to generate downloadable PDFs. We have to declare the exact location we want each line of text to appear, but we were glad to get it working. It is possible to use PDF-LIB to markup existing documents, and if we had more time we would have it fill out a Form 1040 with the user's data.
+
 \subsection{Design Choices}
 Filing taxes is a complicated system. That's why we wanted Taxulator to be as intuitive as possible. When landing on the Taxulator homepage, the user will have the option to sign up or log in. Right underneath these options will also be a prompt for businesses. That will lead to a similar homepage, but with a sign up and log in for businesses. We chose this design because we realize the bulk of our users will be individual tax payers, so we want it to be quick and easy for them to know what to do. If a business happens upon the website though, we want them to find their portal. Alternatively we also will provide a \textit{taxulator.com/business} url for business to go directly to their side of the website.
 
@@ -258,6 +261,9 @@ We tried to use the version control software GitHub to track changes made to the
 \paragraph{phpMyAdmin}
 phpMyAdmin is an online software tool we used to handle the administration over our MySQL database. After generating sample data with FillDB, we imported this data into phpMyAdmin to use with our website \cite{phpMyAdmin}.
 
+\paragraph{PDF-LIB}
+PDF-LIB is a JavaScript library used for generating PDFs. We used it to generate the final tax report and to populate the report with information. It is light weight and was fairly intuitive to use \cite{PDF-LIB}.
+
 \paragraph{Other Tools}
 We also used other tools such as Adobe Illustrator \cite{Illustrator} and Adobe InDesign \cite{InDesign} to draft up user flows and for making presentations. Along the way, we also used Google Docs \cite{GDocs} for shared notes, MySQL Workbench \cite{Workbench} for testing queries, and Visual Studio Code \cite{VSCode} as our editor.
 
@@ -265,7 +271,7 @@ We also used other tools such as Adobe Illustrator \cite{Illustrator} and Adobe 
 Taxulator has come a long way. That being said, there’s still a lot of work ahead of us to make a final product. There are many limitations to our current design, and many improvements that are in order.
 
 \subsection{Current Limitations}
-Currently there are many features that need to be refined in the project. Specifically, connecting the backend to the frontend has been a challenge and has still not been fully implemented. It has been a struggle to work through the different errors that came with PHP, so the software is currently limited by our ability with PHP.
+Currently there are many features that need to be refined in the project. Specifically, connecting the backend to the frontend has been a challenge and has still not been fully implemented. One of the main limitations currently is that the site doesn't have any PDF info extracting capabilities, which would be key for moving forward.
 
 \subsection{Future Improvements}
 In order to improve, the first thing we would do is implement more backend to frontend PHP code. We would build out the forms and make sure they are working with the database. We could then work on a PDF generator to output a final PDF tax report when the user finishes their session. Additionally, we could refine the overall interface of the website, ensuring a consistent design language.

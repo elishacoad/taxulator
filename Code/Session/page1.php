@@ -11,6 +11,30 @@ $search_row = 0;
 // Processing form data when form is submitted
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
+    if (($_FILES['my_file']['name'] != "")) {
+        // Where the file is going to be stored
+        $target_dir = "files/";
+        $file = $_FILES['my_file']['name'];
+        $path = pathinfo($file);
+        $filename = $path['filename'];
+        $ext = $path['extension'];
+        $temp_name = $_FILES['my_file']['tmp_name'];
+        $path_filename_ext = $target_dir . $filename . "." . $ext;
+
+        // Check if file already exists
+        if (file_exists($path_filename_ext)) {
+            // echo "Sorry, file already exists.";
+        } else {
+            move_uploaded_file($temp_name, $path_filename_ext);
+            // if (file_exists($path_filename_ext)) {
+            //     echo "Congratulations! File Uploaded Successfully.";
+            // }
+            // if (file_exists($path_filename_ext)) {
+            //     echo "Error occured";
+            // }
+        }
+    }
+
     if (empty($_POST["isource"])) {
         $isource_err = "please enter income source.";
     } else {
@@ -139,7 +163,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     echo "You are currently logged in as " .  $_SESSION['name'];
                     ?>
                 </p>
-                <form action="page1.php" method="post">
+                <form action="page1.php" method="post" enctype="multipart/form-data">
                     <div class="input-group">
                         <label for="isource">Income source:</label>
                         <input type="text" name="isource" class="form-control" value="<?php echo $isource; ?>">
@@ -183,6 +207,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                         <input type="text" name="ctax" class="form-control" value="<?php echo $ctax; ?>">
                         <span class="help-block"><?php echo $ctax_err; ?></span>
                     </div>
+
+                    <h4>Additional Documents</h4>
+                    <input id="fileupload" name="my_file" type="file" />
                     <hr>
                     <input type="submit" class="btn btn-primary" value="Continue">
                 </form>
